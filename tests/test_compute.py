@@ -151,5 +151,6 @@ EXPECTED_HASHES = [
 def test_basic(expected, image_name, threshold):
     image = cv2.imread(os.path.join('tests', 'images', image_name))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    actual = bindings.compute(image)
+    actual, quality = bindings.compute(image)
     assert (actual != expected).sum() <= threshold
+    assert quality == 100

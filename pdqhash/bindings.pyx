@@ -30,7 +30,7 @@ def compute(np.ndarray[char, ndim=3] image) -> int:
     cdef np.ndarray[float, ndim=2] gray = (image[:, :, 0]*0.299 + image[:, :, 1]*0.587 + image[:, :, 2] * 0.114).astype('float32')
     cdef np.ndarray[float, ndim=2] placeholder = np.zeros_like(gray)
     cdef Hash256 hash_value = Hash256()
-    cdef int quality = 0
+    cdef int quality
     cdef int numRows = gray.shape[0]
     cdef int numCols = gray.shape[1]
     cdef float buffer64x64[64][64]
@@ -49,4 +49,4 @@ def compute(np.ndarray[char, ndim=3] image) -> int:
         hash_value,
         quality
     )
-    return np.array([(hash_value.w[(k & 255) >> 4] >> (k & 15)) & 1 for k in range(256)]).reshape(16, 16)[:, ::-1].flatten()
+    return np.array([(hash_value.w[(k & 255) >> 4] >> (k & 15)) & 1 for k in range(256)]).reshape(16, 16)[:, ::-1].flatten(), quality
