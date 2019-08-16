@@ -4,7 +4,7 @@ These are Python bindings to the PDQ perceptual hash released by Facebook. Note 
 ## Installation
 
 ```
-pip install pdqhash-python
+pip install pdqhash
 ```
 
 ## Usage
