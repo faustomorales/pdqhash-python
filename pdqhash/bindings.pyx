@@ -26,7 +26,7 @@ cdef extern from "../ThreatExchange/hashing/pdq/cpp/downscaling/downscaling.cpp"
 cdef extern from "../ThreatExchange/hashing/pdq/cpp/hashing/torben.cpp" namespace "facebook::pdq::hashing":
     float torben(float m[], int n)
 
-def compute(np.ndarray[char, ndim=3] image) -> int:
+def compute(np.ndarray[char, ndim=3] image):
     cdef np.ndarray[float, ndim=2] gray = (image[:, :, 0]*0.299 + image[:, :, 1]*0.587 + image[:, :, 2] * 0.114).astype('float32')
     cdef np.ndarray[float, ndim=2] placeholder = np.zeros_like(gray)
     cdef Hash256 hash_value = Hash256()
