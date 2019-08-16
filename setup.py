@@ -2,14 +2,14 @@
 
 from setuptools import setup
 from setuptools.extension import Extension
-from Cython.Build import cythonize
 import numpy
 
-extensions = [
+EXTENSIONS = [
     Extension(
         'pdqhash.bindings', ['pdqhash/bindings.pyx'],
         include_dirs=['ThreatExchange/hashing',
-                      numpy.get_include()])
+                      numpy.get_include()],
+        language='c++')
 ]
 
-setup(ext_modules=cythonize(extensions))
+setup(ext_modules=EXTENSIONS)
