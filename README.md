@@ -14,7 +14,7 @@ import pdqhash
 
 image = cv2.imread(os.path.join('tests', 'images', image_name))
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-hash_vector = pdqhash.compute(image)
+hash_vector, quality = pdqhash.compute(image)
 ```
 
 ## Contributing
