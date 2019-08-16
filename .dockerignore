@@ -1,0 +1,4 @@
+.venv
+ThreatExchange
+!ThreatExchange/hashing/pdq
+tests
