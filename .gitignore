@@ -8,3 +8,4 @@ pdqhash/bindings.cpp
 .DS_Store
 *.egg-info
 pdqhash/bindings.c
+.eggs
