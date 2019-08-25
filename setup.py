@@ -9,7 +9,8 @@ EXTENSIONS = [
         'pdqhash.bindings', ['pdqhash/bindings.pyx'],
         include_dirs=['ThreatExchange/hashing',
                       numpy.get_include()],
-        language='c++')
+        language='c++',
+        extra_compile_args=['--std=c++11'])
 ]
 
 setup(ext_modules=EXTENSIONS)
