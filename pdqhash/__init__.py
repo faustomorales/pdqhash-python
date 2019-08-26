@@ -1,1 +1,1 @@
-from .bindings import compute
+from .bindings import compute, compute_dihedral

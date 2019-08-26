@@ -154,3 +154,30 @@ def test_basic(expected, image_name, threshold):
     actual, quality = bindings.compute(image)
     assert (actual != expected).sum() <= threshold
     assert quality == 100
+
+    transforms = dict(
+        r0=image,
+        fv=np.ascontiguousarray(image[::-1, :]),
+        fh=np.ascontiguousarray(image[:, ::-1]),
+        r180=np.ascontiguousarray(image[::-1, ::-1]),
+        r90=np.ascontiguousarray(image.transpose(1, 0, 2)[::-1, :, :]),
+        r90fv=np.ascontiguousarray(image.transpose(1, 0, 2)),
+        r90fh=np.ascontiguousarray(image.transpose(1, 0, 2)[::-1, ::-1]),
+        r270=np.ascontiguousarray(image.transpose(1, 0, 2)[:, ::-1]))
+    transformed_expected = {
+        key: bindings.compute(transform)[0] for key, transform in transforms.items()
+    }
+    transformed_actual, quality = bindings.compute_dihedral(image)
+
+    # Note that the transformations are inexact. The same issue occurs in the base
+    # implementation. See ThreatExchange/hashing/pdq/cpp/reg_test/expected/out.
+    # The results are not identical between the --dihedral approach and running the
+    # hash on the transformed images directly).
+    assert (transformed_actual[0] != transformed_expected['r0']).sum() <= threshold
+    assert (transformed_actual[1] != transformed_expected['r90']).sum() <= threshold
+    assert (transformed_actual[2] != transformed_expected['r180']).sum() <= threshold + 32
+    assert (transformed_actual[3] != transformed_expected['r270']).sum() <= threshold + 40
+    assert (transformed_actual[4] != transformed_expected['fv']).sum() <= threshold + 40
+    assert (transformed_actual[5] != transformed_expected['fh']).sum() <= threshold
+    assert (transformed_actual[6] != transformed_expected['r90fv']).sum() <= threshold
+    assert (transformed_actual[7] != transformed_expected['r90fh']).sum() <= threshold + 32

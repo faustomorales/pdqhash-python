@@ -10,7 +10,7 @@ init:
 	PIPENV_VENV_IN_PROJECT=true pipenv install --dev --skip-lock
 	pipenv run pip install -e .
 test:
-	pipenv run pytest $(TEST_SCOPE)
+	pipenv run pytest -s $(TEST_SCOPE)
 docker_build:
 	docker build --rm --force-rm -t $(IMAGE_NAME) .
 docker_test: docker_build
