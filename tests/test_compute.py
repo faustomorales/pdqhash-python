@@ -153,7 +153,10 @@ def test_basic(expected, image_name, threshold):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     actual, quality = bindings.compute(image)
     assert (actual != expected).sum() <= threshold
-    assert quality == 100
+    
+    actual_float, quality = bindings.compute_float(image)
+    actual_float = actual_float > np.median(actual_float)
+    assert (actual_float != expected).sum() <= threshold
 
     transforms = dict(
         r0=image,

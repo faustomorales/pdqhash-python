@@ -22,6 +22,18 @@ cdef extern from "../ThreatExchange/hashing/pdq/cpp/hashing/pdqhashing.cpp" name
     )
 
 cdef extern from "../ThreatExchange/hashing/pdq/cpp/hashing/pdqhashing.cpp" namespace "facebook::pdq::hashing":
+    void pdqFloat256FromFloatLuma(
+        float* fullBuffer1,
+        float* fullBuffer2,
+        int numRows,
+        int numCols,
+        float buffer64x64[64][64],
+        float buffer16x64[16][64],
+        float output_buffer16x16[16][16],
+        int& quality
+    )
+
+cdef extern from "../ThreatExchange/hashing/pdq/cpp/hashing/pdqhashing.cpp" namespace "facebook::pdq::hashing":
     void pdqDihedralHash256esFromFloatLuma(
         float* fullBuffer1,
         float* fullBuffer2,
@@ -76,6 +88,28 @@ def compute(np.ndarray[char, ndim=3] image):
     )
     
     return hash_to_vector(hash_value.w), quality
+
+def compute_float(np.ndarray[char, ndim=3] image):
+    cdef np.ndarray[float, ndim=2] gray = (image[:, :, 0]*0.299 + image[:, :, 1]*0.587 + image[:, :, 2] * 0.114).astype('float32')
+    cdef np.ndarray[float, ndim=2] placeholder = np.zeros_like(gray)
+    cdef int quality
+    cdef int numRows = gray.shape[0]
+    cdef int numCols = gray.shape[1]
+    cdef float buffer64x64[64][64]
+    cdef float buffer16x64[16][64]
+    cdef float buffer16x16[16][16]
+    cdef float* fullBuffer1 = &gray[0, 0]
+    cdef float* fullBuffer2 = &placeholder[0, 0]
+    pdqFloat256FromFloatLuma(
+        fullBuffer1,
+        fullBuffer2,
+        numRows,
+        numCols,
+        buffer64x64,
+        buffer16x64,
+        buffer16x16,
+        quality)    
+    return np.array(buffer16x16)[:, ::-1].flatten(), quality
 
 def compute_dihedral(np.ndarray[char, ndim=3] image):
     cdef np.ndarray[float, ndim=2] gray = (image[:, :, 0]*0.299 + image[:, :, 1]*0.587 + image[:, :, 2] * 0.114).astype('float32')
