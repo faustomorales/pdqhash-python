@@ -5,7 +5,7 @@ RUN pip install pipenv
 # Install project
 WORKDIR /usr/src
 COPY ./Pipfile* ./
-COPY ./ThreatExchange/hashing/pdq ./ThreatExchange/hashing/pdq
+COPY ./ThreatExchange/pdq ./ThreatExchange/pdq
 COPY ./setup* ./
 COPY ./pdqhash ./pdqhash
 COPY ./Makefile ./Makefile
