@@ -1,4 +1,4 @@
-name: pdqhas-python CI/CD
+name: pdqhash-python CI/CD
 
 on:
   push:
