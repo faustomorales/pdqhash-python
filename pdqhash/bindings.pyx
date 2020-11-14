@@ -3,12 +3,12 @@
 import numpy as np
 cimport numpy as np
 
-cdef extern from "../ThreatExchange/pdq/cpp/common/pdqhashtypes.cpp" namespace "facebook::pdq::hashing":
+cdef extern from "pdq/cpp/common/pdqhashtypes.cpp" namespace "facebook::pdq::hashing":
     cdef struct Hash256:
         unsigned short w[16]
         
 
-cdef extern from "../ThreatExchange/pdq/cpp/hashing/pdqhashing.cpp" namespace "facebook::pdq::hashing":
+cdef extern from "pdq/cpp/hashing/pdqhashing.cpp" namespace "facebook::pdq::hashing":
     void pdqHash256FromFloatLuma(
         float* fullBuffer1,
         float* fullBuffer2,
@@ -21,7 +21,7 @@ cdef extern from "../ThreatExchange/pdq/cpp/hashing/pdqhashing.cpp" namespace "f
         int& quality
     )
 
-cdef extern from "../ThreatExchange/pdq/cpp/hashing/pdqhashing.cpp" namespace "facebook::pdq::hashing":
+cdef extern from "pdq/cpp/hashing/pdqhashing.cpp" namespace "facebook::pdq::hashing":
     void pdqFloat256FromFloatLuma(
         float* fullBuffer1,
         float* fullBuffer2,
@@ -33,7 +33,7 @@ cdef extern from "../ThreatExchange/pdq/cpp/hashing/pdqhashing.cpp" namespace "f
         int& quality
     )
 
-cdef extern from "../ThreatExchange/pdq/cpp/hashing/pdqhashing.cpp" namespace "facebook::pdq::hashing":
+cdef extern from "pdq/cpp/hashing/pdqhashing.cpp" namespace "facebook::pdq::hashing":
     void pdqDihedralHash256esFromFloatLuma(
         float* fullBuffer1,
         float* fullBuffer2,
@@ -54,10 +54,10 @@ cdef extern from "../ThreatExchange/pdq/cpp/hashing/pdqhashing.cpp" namespace "f
         int& quality
     )
 
-cdef extern from "../ThreatExchange/pdq/cpp/downscaling/downscaling.cpp" namespace "facebook::pdq::downscaling":
+cdef extern from "pdq/cpp/downscaling/downscaling.cpp" namespace "facebook::pdq::downscaling":
     int computeJaroszFilterWindowSize(int oldDimension, int newDimension)
 
-cdef extern from "../ThreatExchange/pdq/cpp/hashing/torben.cpp" namespace "facebook::pdq::hashing":
+cdef extern from "pdq/cpp/hashing/torben.cpp" namespace "facebook::pdq::hashing":
     float torben(float m[], int n)
 
 def hash_to_vector(hash_value):
