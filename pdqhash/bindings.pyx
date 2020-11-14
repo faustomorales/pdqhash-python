@@ -3,12 +3,12 @@
 import numpy as np
 cimport numpy as np
 
-cdef extern from "../ThreatExchange/hashing/pdq/cpp/common/pdqhashtypes.cpp" namespace "facebook::pdq::hashing":
+cdef extern from "pdq/cpp/common/pdqhashtypes.cpp" namespace "facebook::pdq::hashing":
     cdef struct Hash256:
         unsigned short w[16]
         
 
-cdef extern from "../ThreatExchange/hashing/pdq/cpp/hashing/pdqhashing.cpp" namespace "facebook::pdq::hashing":
+cdef extern from "pdq/cpp/hashing/pdqhashing.cpp" namespace "facebook::pdq::hashing":
     void pdqHash256FromFloatLuma(
         float* fullBuffer1,
         float* fullBuffer2,
@@ -21,7 +21,7 @@ cdef extern from "../ThreatExchange/hashing/pdq/cpp/hashing/pdqhashing.cpp" name
         int& quality
     )
 
-cdef extern from "../ThreatExchange/hashing/pdq/cpp/hashing/pdqhashing.cpp" namespace "facebook::pdq::hashing":
+cdef extern from "pdq/cpp/hashing/pdqhashing.cpp" namespace "facebook::pdq::hashing":
     void pdqFloat256FromFloatLuma(
         float* fullBuffer1,
         float* fullBuffer2,
@@ -33,7 +33,7 @@ cdef extern from "../ThreatExchange/hashing/pdq/cpp/hashing/pdqhashing.cpp" name
         int& quality
     )
 
-cdef extern from "../ThreatExchange/hashing/pdq/cpp/hashing/pdqhashing.cpp" namespace "facebook::pdq::hashing":
+cdef extern from "pdq/cpp/hashing/pdqhashing.cpp" namespace "facebook::pdq::hashing":
     void pdqDihedralHash256esFromFloatLuma(
         float* fullBuffer1,
         float* fullBuffer2,
@@ -54,14 +54,14 @@ cdef extern from "../ThreatExchange/hashing/pdq/cpp/hashing/pdqhashing.cpp" name
         int& quality
     )
 
-cdef extern from "../ThreatExchange/hashing/pdq/cpp/downscaling/downscaling.cpp" namespace "facebook::pdq::downscaling":
+cdef extern from "pdq/cpp/downscaling/downscaling.cpp" namespace "facebook::pdq::downscaling":
     int computeJaroszFilterWindowSize(int oldDimension, int newDimension)
 
-cdef extern from "../ThreatExchange/hashing/pdq/cpp/hashing/torben.cpp" namespace "facebook::pdq::hashing":
+cdef extern from "pdq/cpp/hashing/torben.cpp" namespace "facebook::pdq::hashing":
     float torben(float m[], int n)
 
 def hash_to_vector(hash_value):
-    return np.array([(hash_value[(k & 255) >> 4] >> (k & 15)) & 1 for k in range(256)]).reshape(16, 16)[:, ::-1].flatten()
+    return np.array([(hash_value[(k & 255) >> 4] >> (k & 15)) & 1 for k in range(256)])[::-1]
 
 def compute(np.ndarray[char, ndim=3] image):
     cdef np.ndarray[float, ndim=2] gray = (image[:, :, 0]*0.299 + image[:, :, 1]*0.587 + image[:, :, 2] * 0.114).astype('float32')
@@ -109,7 +109,7 @@ def compute_float(np.ndarray[char, ndim=3] image):
         buffer16x64,
         buffer16x16,
         quality)    
-    return np.array(buffer16x16)[:, ::-1].flatten(), quality
+    return np.array(buffer16x16).flatten()[::-1], quality
 
 def compute_dihedral(np.ndarray[char, ndim=3] image):
     cdef np.ndarray[float, ndim=2] gray = (image[:, :, 0]*0.299 + image[:, :, 1]*0.587 + image[:, :, 2] * 0.114).astype('float32')

@@ -8,7 +8,7 @@ pylint = "==2.3.0"
 pytest = "*"
 yapf = "==0.25.0"
 numpy = "*"
-opencv-python = "*"
+opencv-python-headless = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.6"
