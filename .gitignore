@@ -9,3 +9,4 @@ pdqhash/bindings.cpp
 *.egg-info
 pdqhash/bindings.c
 .eggs
+ThreatExchange/pdq/cpp/common

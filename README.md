@@ -1,4 +1,5 @@
-# pdqhash-python [![CircleCI](https://circleci.com/gh/faustomorales/pdqhash-python.svg?style=svg)](https://circleci.com/gh/faustomorales/pdqhash-python)
+# pdqhash-python
+
 These are Python bindings to the PDQ perceptual hash released by Facebook. Note that the bindings are provided under the MIT license but the PDQ source code is licensed separately under its own license (see the `ThreatExchange/hashing/pdq` folder).
 
 ## Installation
@@ -33,6 +34,7 @@ hash_vector_float, quality = pdqhash.compute_float(image)
 ```
 
 ## Contributing
+
 - Set up local development using `make init` (you need to have `pipenv` installed)
 - Run tests using `make test`
 - Run tests in Docker using `make docker_test`

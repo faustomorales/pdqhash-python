@@ -1,7 +1,12 @@
 # distutils: language = c++
 # cython: language_level=3
+# cython: language=c++
+
 import numpy as np
 cimport numpy as np
+
+cdef extern from "patches.h":
+    pass
 
 cdef extern from "pdq/cpp/common/pdqhashtypes.cpp" namespace "facebook::pdq::hashing":
     cdef struct Hash256:
