@@ -2,13 +2,15 @@ name: pdqhash-python CI/CD
 
 on: workflow_dispatch
 
+# We don't currently build for Linux, because
+# we need to sort out manylinux. Maybe another day!
 jobs:
   build:
     name: Build Package
     strategy:
       matrix:
         python: ['3.7', '3.8', '3.9', '3.10']
-        os: [windows-latest, macos-latest, ubuntu-20.04]
+        os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Code
