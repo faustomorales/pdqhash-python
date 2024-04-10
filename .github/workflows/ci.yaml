@@ -49,4 +49,8 @@ jobs:
           submodules: true
           fetch-depth: 0
       - name: Build Manylinux Wheels
-        run: docker run --rm -v $PWD:/io --workdir /io quay.io/pypa/manylinux_2_28_x86_64 make PYTHON_VERSION=${{ matrix.python }} manylinux-wheel
+        run: docker run --rm -v ${{ github.workspace }}:/io --workdir /io quay.io/pypa/manylinux_2_28_x86_64 make PYTHON_VERSION=${{ matrix.python }} manylinux-wheel
+      - uses: actions/upload-artifact@v3
+        with:
+          name: linux-wheels
+          path: dist/
