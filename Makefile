@@ -13,3 +13,8 @@ test:
 package:
 	rm -rf dist 
 	$(PYTHON) setup.py sdist bdist_wheel
+manylinux-wheel: PYBIN = "/opt/python/cp$(subst .,,$(PYTHON_VERSION))-cp$(subst .,,$(PYTHON_VERSION))/bin"
+manylinux-wheel:
+	rm -rf dist
+	$(PYBIN)/pip install -r requirements.txt
+	$(PYBIN)/python setup.py sdist bdist_wheel
