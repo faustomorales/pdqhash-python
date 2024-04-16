@@ -2,19 +2,17 @@ name: pdqhash-python CI/CD
 
 on: workflow_dispatch
 
-# We don't currently build for Linux, because
-# we need to sort out manylinux. Maybe another day!
 jobs:
   build:
-    name: Build Package
+    name: Build Windows and MacOS Package
     strategy:
       matrix:
-        python: ['3.7', '3.8', '3.9', '3.10']
+        python: ['3.8', '3.9', '3.10', '3.11']
         os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: true
           fetch-depth: 0
@@ -38,3 +36,21 @@ jobs:
         with:
           name: wheels
           path: dist/*
+  build-linux:
+    name: Build Linux Package
+    strategy:
+      matrix:
+        python: ['3.8', '3.9', '3.10', '3.11']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Build Manylinux Wheels
+        run: docker run --rm -v ${{ github.workspace }}:/io --workdir /io quay.io/pypa/manylinux_2_28_x86_64 make PYTHON_VERSION=${{ matrix.python }} manylinux-wheel
+      - uses: actions/upload-artifact@v3
+        with:
+          name: linux-wheels
+          path: dist/
