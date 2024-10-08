@@ -1,5 +1,5 @@
 pytest
-numpy
+numpy>=1.26.0
 opencv-python-headless
 wheel
 cython
