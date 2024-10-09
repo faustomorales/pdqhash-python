@@ -7,7 +7,7 @@ jobs:
     name: Build Windows and MacOS Package
     strategy:
       matrix:
-        python: ['3.8', '3.9', '3.10', '3.11']
+        python: ["3.9", "3.10", "3.11", "3.12", "3.13"]
         os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -40,7 +40,7 @@ jobs:
     name: Build Linux Package
     strategy:
       matrix:
-        python: ['3.8', '3.9', '3.10', '3.11']
+        python: ["3.9", "3.10", "3.11", "3.12", "3.13"]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
