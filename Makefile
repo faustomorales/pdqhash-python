@@ -14,8 +14,6 @@ package:
 	rm -rf dist
 	$(PYTHON) -m pip install build
 	$(PYTHON) -m build
-version:
-	$(PYTHON) setup.py version
 manylinux-wheel-docker:
     docker run --rm -v $(PWD):/io --workdir /io quay.io/pypa/manylinux_2_28_x86_64 make PYTHON_VERSION=3.13 manylinux-wheel
 manylinux-wheel: PYBIN = "/opt/python/cp$(subst .,,$(PYTHON_VERSION))-cp$(subst .,,$(PYTHON_VERSION))/bin"
