@@ -38,3 +38,12 @@ hash_vector_float, quality = pdqhash.compute_float(image)
 - Set up local development using `make init` (you need to have `pipenv` installed)
 - Run tests using `make test`
 - Run tests in Docker using `make docker_test`
+
+## Publishing New Versions
+To publish a new version, do the following:
+
+1. Bump the version number in `pdqhash/_version.py`
+2. Create a new tag (e.g., `v0.2.8`) for the new version.
+3. Push to GitHub.
+4. Run the build workflow.
+5. Download the artifacts and publish to PyPi. Note that you will have to delete the Linux wheels because, for some reason, the manylinux Docker image is currently not creating manylinux wheels.
