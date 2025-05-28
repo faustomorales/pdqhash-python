@@ -11,8 +11,9 @@ init:
 test:
 	$(PYTHON) -m pytest -s
 package:
-	rm -rf dist 
-	$(PYTHON) setup.py sdist bdist_wheel
+	rm -rf dist
+	$(PYTHON) -m pip install build
+	$(PYTHON) -m build
 manylinux-wheel: PYBIN = "/opt/python/cp$(subst .,,$(PYTHON_VERSION))-cp$(subst .,,$(PYTHON_VERSION))/bin"
 manylinux-wheel:
 	rm -rf dist
