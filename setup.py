@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import pathlib
+import sys
 from setuptools import setup
 from setuptools.extension import Extension
 import numpy
 
+
+COMPILE_ARGS = ["/std:c++14"] if sys.platform == "win32" else ["-std=c++11"]
 
 EXTENSIONS = [
     Extension(
@@ -12,7 +15,7 @@ EXTENSIONS = [
         ["pdqhash/bindings.pyx"],
         include_dirs=["ThreatExchange", "include", numpy.get_include()],
         language="c++",
-        extra_compile_args=["--std=c++11"],
+        extra_compile_args=COMPILE_ARGS,
     )
 ]
 
