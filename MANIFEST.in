@@ -1,7 +1,7 @@
 recursive-exclude ThreatExchange *
 recursive-include ThreatExchange/pdq *.cpp *.h
 include ThreatExchange/pdq/LICENSE.txt
-recursive-include pdqhash *.py *pyx
+recursive-include pdqhash *.py *.pyx *.pyi py.typed
 recursive-exclude pdqhash *.so *.dll *.cpp *.cinclude
 include pdqhash/_version.py
 recursive-include include *.h
