@@ -193,3 +193,14 @@ def test_basic(expected, image_name, threshold):
             transformed_expected['r90fv']).sum() <= threshold
     assert (transformed_actual[7] !=
             transformed_expected['r90fh']).sum() <= threshold + 32
+
+
+@pytest.mark.parametrize("bad_dtype", [np.int8, np.uint16, np.int32, np.float32])
+def test_non_uint8_dtypes_raise_value_error(bad_dtype):
+    arr = np.zeros((64, 64, 3), dtype=bad_dtype)
+    with pytest.raises(ValueError, match="uint8_t"):
+        bindings.compute(arr)
+    with pytest.raises(ValueError, match="uint8_t"):
+        bindings.compute_float(arr)
+    with pytest.raises(ValueError, match="uint8_t"):
+        bindings.compute_dihedral(arr)
