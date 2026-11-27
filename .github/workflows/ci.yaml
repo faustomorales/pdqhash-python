@@ -1,13 +1,15 @@
 name: pdqhash-python CI/CD
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  pull_request:
 
 jobs:
   build:
     name: Build Windows and MacOS Package
     strategy:
       matrix:
-        python: ["3.10", "3.11", "3.12", "3.13"]
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
         os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -18,11 +20,11 @@ jobs:
           fetch-depth: 0
       - name: Set up Python ${{ matrix.python }}
         id: python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
       - name: Cache Environment
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .venv
           key: ${{ runner.os }}-${{ steps.python.outputs.python-version }}
@@ -40,7 +42,7 @@ jobs:
     name: Build Linux Package
     strategy:
       matrix:
-        python: ["3.10", "3.11", "3.12", "3.13"]
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -53,7 +55,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: linux-${{ matrix.python }}-wheel
-          path: dist/*.whl
+          path: dist/*manylinux*.whl
       - uses: actions/upload-artifact@v4
         if: matrix.python == '3.13'
         with:
