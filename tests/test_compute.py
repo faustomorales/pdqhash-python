@@ -195,6 +195,42 @@ def test_basic(expected, image_name, threshold):
             transformed_expected['r90fh']).sum() <= threshold + 32
 
 
+def test_non_contiguous_views_match_contiguous():
+    image = cv2.imread(os.path.join('tests', 'images', 'image1.jpg'))
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    for view in (image.transpose(1, 0, 2), np.asfortranarray(image), image[:, ::-1, :]):
+        contig = np.ascontiguousarray(view)
+        assert not view.flags.c_contiguous
+
+        h_view, q_view = bindings.compute(view)
+        h_contig, q_contig = bindings.compute(contig)
+        assert q_view == q_contig
+        assert np.array_equal(h_view, h_contig)
+
+        f_view, fq_view = bindings.compute_float(view)
+        f_contig, fq_contig = bindings.compute_float(contig)
+        assert fq_view == fq_contig
+        assert np.allclose(f_view, f_contig)
+
+        d_view, dq_view = bindings.compute_dihedral(view)
+        d_contig, dq_contig = bindings.compute_dihedral(contig)
+        assert dq_view == dq_contig
+        for actual_vec, expected_vec in zip(d_view, d_contig):
+            assert np.array_equal(actual_vec, expected_vec)
+
+
+@pytest.mark.parametrize("bad_shape", [(0, 64, 3), (64, 0, 3), (64, 64, 2)])
+def test_invalid_shapes_raise_value_error(bad_shape):
+    bad = np.zeros(bad_shape, dtype=np.uint8)
+    with pytest.raises(ValueError):
+        bindings.compute(bad)
+    with pytest.raises(ValueError):
+        bindings.compute_float(bad)
+    with pytest.raises(ValueError):
+        bindings.compute_dihedral(bad)
+
+
 @pytest.mark.parametrize("bad_dtype", [np.int8, np.uint16, np.int32, np.float32])
 def test_non_uint8_dtypes_raise_value_error(bad_dtype):
     arr = np.zeros((64, 64, 3), dtype=bad_dtype)

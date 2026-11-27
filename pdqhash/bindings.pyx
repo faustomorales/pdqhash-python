@@ -68,13 +68,23 @@ cdef extern from "pdq/cpp/hashing/torben.cpp" namespace "facebook::pdq::hashing"
 def hash_to_vector(hash_value):
     return np.array([(hash_value[(k & 255) >> 4] >> (k & 15)) & 1 for k in range(256)])[::-1]
 
+cdef np.ndarray[float, ndim=2, mode="c"] _to_contiguous_luma(
+    np.ndarray[np.uint8_t, ndim=3] image
+):
+    if image.shape[0] <= 0 or image.shape[1] <= 0 or image.shape[2] < 3:
+        raise ValueError("Expected non-empty 3D image array with at least 3 channels")
+    return np.ascontiguousarray(
+        image[:, :, 0] * 0.299 + image[:, :, 1] * 0.587 + image[:, :, 2] * 0.114,
+        dtype=np.float32,
+    )
+
 def compute(np.ndarray[np.uint8_t, ndim=3] image):
-    cdef np.ndarray[float, ndim=2] gray = (image[:, :, 0]*0.299 + image[:, :, 1]*0.587 + image[:, :, 2] * 0.114).astype('float32')
-    cdef np.ndarray[float, ndim=2] placeholder = np.zeros_like(gray)
-    cdef Hash256 hash_value
-    cdef int quality = 0
+    cdef np.ndarray[float, ndim=2, mode="c"] gray = _to_contiguous_luma(image)
     cdef int numRows = <int>gray.shape[0]
     cdef int numCols = <int>gray.shape[1]
+    cdef np.ndarray[float, ndim=2, mode="c"] placeholder = np.zeros((numRows, numCols), dtype=np.float32, order="C")
+    cdef Hash256 hash_value
+    cdef int quality = 0
     cdef float buffer64x64[64][64]
     cdef float buffer16x64[16][64]
     cdef float buffer16x16[16][16]
@@ -95,11 +105,11 @@ def compute(np.ndarray[np.uint8_t, ndim=3] image):
     return hash_to_vector(hash_value.w), quality
 
 def compute_float(np.ndarray[np.uint8_t, ndim=3] image):
-    cdef np.ndarray[float, ndim=2] gray = (image[:, :, 0]*0.299 + image[:, :, 1]*0.587 + image[:, :, 2] * 0.114).astype('float32')
-    cdef np.ndarray[float, ndim=2] placeholder = np.zeros_like(gray)
-    cdef int quality = 0
+    cdef np.ndarray[float, ndim=2, mode="c"] gray = _to_contiguous_luma(image)
     cdef int numRows = <int>gray.shape[0]
     cdef int numCols = <int>gray.shape[1]
+    cdef np.ndarray[float, ndim=2, mode="c"] placeholder = np.zeros((numRows, numCols), dtype=np.float32, order="C")
+    cdef int quality = 0
     cdef float buffer64x64[64][64]
     cdef float buffer16x64[16][64]
     cdef float buffer16x16[16][16]
@@ -117,8 +127,10 @@ def compute_float(np.ndarray[np.uint8_t, ndim=3] image):
     return np.array(buffer16x16).flatten()[::-1], quality
 
 def compute_dihedral(np.ndarray[np.uint8_t, ndim=3] image):
-    cdef np.ndarray[float, ndim=2] gray = (image[:, :, 0]*0.299 + image[:, :, 1]*0.587 + image[:, :, 2] * 0.114).astype('float32')
-    cdef np.ndarray[float, ndim=2] placeholder = np.zeros_like(gray)
+    cdef np.ndarray[float, ndim=2, mode="c"] gray = _to_contiguous_luma(image)
+    cdef int numRows = <int>gray.shape[0]
+    cdef int numCols = <int>gray.shape[1]
+    cdef np.ndarray[float, ndim=2, mode="c"] placeholder = np.zeros((numRows, numCols), dtype=np.float32, order="C")
     cdef Hash256 hashptrOriginal
     cdef Hash256 hashptrRotate90
     cdef Hash256 hashptrRotate180
@@ -128,8 +140,6 @@ def compute_dihedral(np.ndarray[np.uint8_t, ndim=3] image):
     cdef Hash256 hashptrFlipPlus1
     cdef Hash256 hashptrFlipMinus1
     cdef int quality = 0
-    cdef int numRows = <int>gray.shape[0]
-    cdef int numCols = <int>gray.shape[1]
     cdef float buffer64x64[64][64]
     cdef float buffer16x64[16][64]
     cdef float buffer16x16[16][16]
