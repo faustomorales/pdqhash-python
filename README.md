@@ -46,4 +46,4 @@ To publish a new version, do the following:
 2. Create a new tag (e.g., `v0.2.8`) for the new version.
 3. Push to GitHub.
 4. Run the build workflow.
-5. Download the artifacts and publish to PyPi. Note that you will have to delete the Linux wheels because, for some reason, the manylinux Docker image is currently not creating manylinux wheels.
+5. Download the artifacts and publish to PyPi.
